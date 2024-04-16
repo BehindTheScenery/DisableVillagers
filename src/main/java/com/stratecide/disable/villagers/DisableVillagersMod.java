@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
 public class DisableVillagersMod implements ModInitializer {
@@ -43,7 +44,8 @@ public class DisableVillagersMod implements ModInitializer {
 		]
 	  }
 	]
-  }
+  },
+  "allowedProfessions": []
 }""";
 	private static final Gson GSON = LootGsons.getTableGsonBuilder().create();
 	private static boolean isInitialized = false;
@@ -62,9 +64,16 @@ public class DisableVillagersMod implements ModInitializer {
 	private static JsonElement curedZombieLootJson = null;
 	public static LootTable curedZombieLoot = null;
 	private static boolean disableVillages = false;
+	public static List<String> allowedProfessions;
+
 	public static boolean getDisabledVillages() {
 		loadConfig();
 		return disableVillages;
+	}
+
+	public static List<String> getAllowedProfessions() {
+		loadConfig();
+		return allowedProfessions;
 	}
 
 	@Override
@@ -112,5 +121,6 @@ public class DisableVillagersMod implements ModInitializer {
 		curableZombies = config.get("curableZombies").getAsBoolean();
 		disableVillages = config.get("disableVillages").getAsBoolean();
 		curedZombieLootJson = config.get("curedZombieLoot");
+		allowedProfessions = config.has("allowedProfessions") ? GSON.fromJson(config.get("allowedProfessions"), List.class) : List.of();
 	}
 }

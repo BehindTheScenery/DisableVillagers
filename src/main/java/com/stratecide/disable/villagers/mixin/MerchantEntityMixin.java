@@ -15,8 +15,12 @@ public class MerchantEntityMixin {
 
     @Inject(method = "getOffers", at = @At("HEAD"), cancellable = true)
     private void injectGetOffers(CallbackInfoReturnable<TradeOfferList> cir) {
-        if (DisableVillagersMod.blockTrading && ((Object) this) instanceof VillagerEntity
-        || DisableVillagersMod.disableWanderingTrader && ((Object) this) instanceof WanderingTraderEntity) {
+        if (((Object) this) instanceof VillagerEntity) {
+            VillagerEntity villager = (VillagerEntity) (Object) this;
+            if (DisableVillagersMod.blockTrading && !DisableVillagersMod.getAllowedProfessions().contains(villager.getVillagerData().getProfession().toString())) {
+                cir.setReturnValue(new TradeOfferList());
+            }
+        } else if (DisableVillagersMod.disableWanderingTrader && ((Object) this) instanceof WanderingTraderEntity) {
             cir.setReturnValue(new TradeOfferList());
         }
     }
